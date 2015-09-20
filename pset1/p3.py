@@ -2,35 +2,19 @@ base_string = 'Longest substring in alphabetical order is: '
 
 def alphasubs(s):
     longest = ''
-    idx = 0
+    temp = s[0]
+
     for i in range(1, len(s)):
         if s[i-1] <= s[i]:
-            idx += 1
+            temp += s[i]
         else:
-            idx = 0
+            if len(temp) > len(longest):
+                longest = temp
+            temp = s[i]
 
-        if idx > len(longest):
-            print(s[i-idx:i+1])
-            longest = s[i-idx:i+1]
+    if len(temp) > len(longest):
+        longest = temp
 
     return longest
 
-# To run in the EDX platform
-#print(base_string + alphasubs(s))
-# abcdefghij
-
-## some test cases from EDX
-import unittest
-class StringTests(unittest.TestCase):
-    def test_alphabetical(self):
-        self.assertEqual(alphasubs('jxwsrserrwjysvjktrcfesjf'), 'errw')
-        self.assertEqual(alphasubs('heokjetjroyzmjgmgo'), 'oyz')
-        self.assertEqual(alphasubs('vlczsarcosuyppi'), 'cosuy')
-        self.assertEqual(alphasubs('hbvcqxmcpmjcfbj'), 'cqx')
-        self.assertEqual(alphasubs('dacvlkdppeywzlf'), 'acv')
-        self.assertEqual(alphasubs('jojhmjjn'), 'jjn')
-        self.assertEqual(alphasubs('mnqtbsqgumwmxwlktk'), 'mnqt')
-        self.assertEqual(alphasubs('abcdefghijklmnopqrstuvwxyz'), 'abcdefghijklmnopqrstuvwxyz')
-
-if __name__ == '__main__':
-    unittest.main()
+print(base_string + alphasubs(s))
