@@ -1,7 +1,4 @@
-# MITx-6.0.0.1x
+# MITx-6.00.1x
 
-Simple algorithms in Python to resolve the problems/exercises from MITx-6.0.0.1x course, on EDX platform.
+Solutions to MITx-6.0.0.1x course.
 
-Just to learn and pratice coding with Python and get some tips from MIT professors.
-
-Problem Set 1: https://github.com/tartalia/MITx-6.0.0.1x/tree/master/pset1
