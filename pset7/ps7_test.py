@@ -1,7 +1,7 @@
 # 6.00.1x
 # Problem Set 7 Test Suite
 import unittest
-import sys 
+import sys
 from ps7 import *
 
 class ProblemSet7NewsStory(unittest.TestCase):
@@ -62,7 +62,7 @@ class ProblemSet7(unittest.TestCase):
             self.assertTrue(trig.evaluate(pink), "TitleTrigger failed to fire when the word had an apostrophe on it")
             self.assertTrue(trig.evaluate(football), "TitleTrigger failed to fire in the presence of lots of punctuation")
             self.assertTrue(trig.evaluate(caps), "TitleTrigger is case-sensitive and shouldn't be")
-            
+
             self.assertFalse(trig.evaluate(microsoft), "TitleTrigger fired when the word was present, but not as its own word (e.g. 'soft' and 'Microsoft)'")
             self.assertFalse(trig.evaluate(nothing), "TitleTrigger fired when the word wasn't really present in the title")
 
@@ -85,7 +85,7 @@ class ProblemSet7(unittest.TestCase):
             self.assertTrue(trig.evaluate(pink), "SubjectTrigger failed to fire when the word had an apostrophe on it")
             self.assertTrue(trig.evaluate(football), "SubjectTrigger failed to fire in the presence of lots of punctuation")
             self.assertTrue(trig.evaluate(caps), "SubjectTrigger is case-sensitive and shouldn't be")
-            
+
             self.assertFalse(trig.evaluate(microsoft), "SubjectTrigger fired when the word was present, but not as its own word (e.g. 'soft' and 'Microsoft)'")
             self.assertFalse(trig.evaluate(nothing), "SubjectTrigger fired when the word wasn't really present in the subject")
 
@@ -108,7 +108,7 @@ class ProblemSet7(unittest.TestCase):
             self.assertTrue(trig.evaluate(pink), "SummaryTrigger failed to fire when the word had an apostrophe on it")
             self.assertTrue(trig.evaluate(football), "SummaryTrigger failed to fire in the presence of lots of punctuation")
             self.assertTrue(trig.evaluate(caps), "SummaryTrigger is case-sensitive and shouldn't be")
-            
+
             self.assertFalse(trig.evaluate(microsoft), "SummaryTrigger fired when the word was present, but not as its own word (e.g. 'soft' and 'Microsoft)'")
             self.assertFalse(trig.evaluate(nothing), "SummaryTrigger fired when the word wasn't really present in the summary")
 
@@ -158,7 +158,7 @@ class ProblemSet7(unittest.TestCase):
         self.assertTrue(pt.evaluate(a), "PhraseTrigger doesn't find phrase in title")
         self.assertTrue(pt.evaluate(b), "PhraseTrigger doesn't find phrase in subject")
         self.assertTrue(pt.evaluate(c), "PhraseTrigger doesn't find phrase in summary")
-    
+
         for s in [noa, nob, noc]:
             self.assertFalse(pt.evaluate(s), "PhraseTrigger is case-insensitive, and shouldn't be")
 
@@ -206,5 +206,4 @@ if __name__ == "__main__":
     suite.addTest(unittest.makeSuite(ProblemSet7NewsStory))
     suite.addTest(unittest.makeSuite(ProblemSet7))
 #    unittest.TextTestRunner(verbosity=2).run(suite)
-    unittest.TextTestRunner(verbosity=2, stream=sys.stdout).run(suite) 
-
+    unittest.TextTestRunner(verbosity=2, stream=sys.stdout).run(suite)

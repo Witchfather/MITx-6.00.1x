@@ -45,8 +45,37 @@ def process(url):
 #======================
 
 # Problem 1
+class NewsStory:
 
-# TODO: NewsStory
+    def __init__(self, guuid, title, subject, summary, link):
+        self.guuid = guuid
+        self.title = title
+        self.subject = subject
+        self.summary = summary
+        self.link = link
+
+    def getGuid(self):
+        return self.guuid
+
+    def getTitle(self):
+        return self.title
+
+    def getSubject(self):
+        return self.subject
+
+    def getSummary(self):
+        return self.summary
+
+    def getLink(self):
+        return self.link
+
+    def __str__(self):
+        return "guid => " + self.getGuid() + \
+                "; title => " + self.getTitle() + \
+                "; subject => " + self.getSubject() + \
+                "; summary => "  + self.getSummary() + \
+                "; link => " + self.getLink()
+
 
 #======================
 # Part 2
@@ -64,31 +93,77 @@ class Trigger(object):
 # Whole Word Triggers
 # Problems 2-5
 
-# TODO: WordTrigger
+class WordTrigger(Trigger):
 
-# TODO: TitleTrigger
-# TODO: SubjectTrigger
-# TODO: SummaryTrigger
+    def __init__(self, word):
+        self.word = word.lower()
 
+    def isWordIn(self, text):
+        treated_word = None
+        for w in text.split():
+            treated_word = w.lower()
+            for c in string.punctuation:
+                if c == "'":
+                    c += 's'
+                treated_word = treated_word.replace(c, '')
+            if treated_word == self.word:
+                return True
+        return False
 
-# Composite Triggers
-# Problems 6-8
+class TitleTrigger(WordTrigger):
+    def evaluate(self, story):
+        return self.isWordIn(story.getTitle())
 
-# TODO: NotTrigger
-# TODO: AndTrigger
-# TODO: OrTrigger
+class SubjectTrigger(WordTrigger):
+    def evaluate(self, story):
+        return self.isWordIn(story.getSubject())
 
+class SummaryTrigger(WordTrigger):
+    def evaluate(self, story):
+        return self.isWordIn(story.getSummary())
+
+class NotTrigger(Trigger):
+    def __init__(self, trigger):
+        self.trigger = trigger
+
+    def evaluate(self, story):
+        return not self.trigger.evaluate(story)
+
+class AndTrigger(Trigger):
+    def __init__(self, trigger1, trigger2):
+        self.trigger1 = trigger1
+        self.trigger2 = trigger2
+
+    def evaluate(self, story):
+        return self.trigger1.evaluate(story) and self.trigger2.evaluate(story)
+
+class OrTrigger(Trigger):
+    def __init__(self, trigger1, trigger2):
+        self.trigger1 = trigger1
+        self.trigger2 = trigger2
+
+    def evaluate(self, story):
+        return self.trigger1.evaluate(story) or self.trigger2.evaluate(story)
 
 # Phrase Trigger
 # Question 9
 
-# TODO: PhraseTrigger
+class PhraseTrigger(Trigger):
+    def __init__(self, phrase):
+        self.phrase = phrase
 
+    def evaluate(self, story):
+        return (self.phrase in story.getSummary()) or \
+               (self.phrase in story.getSubject()) or \
+               (self.phrase in story.getTitle())
 
 #======================
 # Part 3
 # Filtering
 #======================
+
+def print_story(story):
+    print(story)
 
 def filterStories(stories, triggerlist):
     """
@@ -96,9 +171,13 @@ def filterStories(stories, triggerlist):
 
     Returns: a list of only the stories for which a trigger in triggerlist fires.
     """
-    # TODO: Problem 10
-    # This is a placeholder (we're just returning all the stories, with no filtering) 
-    return stories
+    filtered_stories = []
+    for story in stories:
+        for trigger in triggerlist:
+            if trigger.evaluate(story):
+                filtered_stories.append(story)
+                break
+    return filtered_stories
 
 #======================
 # Part 4
@@ -113,14 +192,34 @@ def makeTrigger(triggerMap, triggerType, params, name):
 
     triggerMap: dictionary with names as keys (strings) and triggers as values
     triggerType: string indicating the type of trigger to make (ex: "TITLE")
-    params: list of strings with the inputs to the trigger constructor (ex: ["world"])
+    params: list of strings with the inputs to the trigger constructo(r (ex: ["world"])
     name: a string representing the name of the new trigger (ex: "t1")
 
     Modifies triggerMap, adding a new key-value pair for this trigger.
 
     Returns a new instance of a trigger (ex: TitleTrigger, AndTrigger).
     """
-    # TODO: Problem 11
+    trigger = None
+    if triggerType == 'SUBJECT':
+        trigger = SubjectTrigger(params[0])
+    elif triggerType == 'TITLE':
+        trigger = TitleTrigger(params[0])
+    elif triggerType == 'SUMMARY':
+        trigger = SummaryTrigger(params[0])
+    elif triggerType == 'PHRASE':
+        word = ''
+        for w in params:
+            word += w + ' '
+        trigger = PhraseTrigger(word.rstrip())
+    elif triggerType == 'AND':
+        trigger = AndTrigger(triggerMap[params[0]], triggerMap[params[1]])
+    elif triggerType == 'OR':
+        trigger = OrTrigger(triggerMap[params[0]], triggerMap[params[1]])
+    elif triggerType == 'NOT':
+        trigger = NotTrigger(triggerMap[params[0]])
+
+    triggerMap[name] = trigger
+    return trigger
 
 
 def readTriggerConfig(filename):
@@ -161,7 +260,7 @@ def readTriggerConfig(filename):
                 triggers.append(triggerMap[name])
 
     return triggers
-    
+
 import thread
 
 SLEEPTIME = 60 #seconds -- how often we poll
@@ -177,7 +276,7 @@ def main_thread(master):
         t3 = PhraseTrigger("Election")
         t4 = OrTrigger(t2, t3)
         triggerlist = [t1, t4]
-        
+
         # TODO: Problem 11
         # After implementing makeTrigger, uncomment the line below:
         # triggerlist = readTriggerConfig("triggers.txt")
@@ -187,7 +286,7 @@ def main_thread(master):
         frame.pack(side=BOTTOM)
         scrollbar = Scrollbar(master)
         scrollbar.pack(side=RIGHT,fill=Y)
-        
+
         t = "Google & Yahoo Top News"
         title = StringVar()
         title.set(t)
@@ -238,4 +337,3 @@ if __name__ == '__main__':
     root.title("Some RSS parser")
     thread.start_new_thread(main_thread, (root,))
     root.mainloop()
-
